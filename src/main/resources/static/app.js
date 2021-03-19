@@ -18,7 +18,7 @@ function connect() {
     stompClient.connect({}, function (frame) {
         setConnected(true);
         console.log("Connected to websocket: " + frame);
-        stompClient.subscribe('/topic/greetings', function(greeting) {
+        stompClient.subscribe('/topic/messages', function(greeting) {
             showGreeting(JSON.parse(greeting.body).text);
         });
     });
@@ -37,7 +37,7 @@ function showGreeting(message) {
 }
 
 function sendMessage() {
-    stompClient.send("/app/hello", {}, JSON.stringify({'name': 'admin', 'text': $("#chat-text").val()}));
+    stompClient.send("/app/chat", {}, JSON.stringify({'name': 'admin', 'text': $("#chat-text").val()}));
 }
 
 $(function () {

@@ -11,8 +11,8 @@ import java.util.Date;
 @Controller
 public class ChatController {
 
-    @MessageMapping("/hello")
-    @SendTo("/topic/greetings")
+    @MessageMapping("/chat")
+    @SendTo("/topic/messages")
     public OutputMessage sendMessage(@Payload Message message) {
         String date = new SimpleDateFormat("HH:mm").format(new Date());
         return new OutputMessage(message.getFrom(), message.getText(), date);

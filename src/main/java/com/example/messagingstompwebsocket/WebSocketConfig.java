@@ -17,8 +17,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         config.enableSimpleBroker("/topic");
 
         // It also designates the /app prefix for messages that are bound for methods annotated with @MessageMapping.
-        // This prefix will be used to define all the message mappings. For example, /app/hello is the endpoint
-        // that the GreetingController.greeting() method is mapped to handle.
+        // This prefix will be used to define all the message mappings. For example, /app/chat is the endpoint
+        // that the ChatController.sendMessage() method is mapped to handle.
         config.setApplicationDestinationPrefixes("/app");
     }
 
