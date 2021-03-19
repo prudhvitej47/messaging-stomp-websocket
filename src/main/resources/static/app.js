@@ -4,6 +4,7 @@ function setConnected(connected) {
     $("#connect").prop("disabled", connected);
     $("#chat-text").prop("disabled", !connected);
     $("#disconnect").prop("disabled", !connected);
+    $("#username").prop("disabled", connected);
     if (connected) {
         $("#conversation").show();
     } else {
@@ -13,15 +14,21 @@ function setConnected(connected) {
 }
 
 function connect() {
-    var socket = new SockJS('/gs-guide-websocket');
-    stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
-        setConnected(true);
-        console.log("Connected to websocket: " + frame);
-        stompClient.subscribe('/topic/messages', function(greeting) {
-            showGreeting(JSON.parse(greeting.body).text);
+    if (!$("#username").val()) {
+        $("#username").addClass("is-invalid");
+    } else {
+        $("#username").removeClass("is-invalid");
+        var socket = new SockJS('/gs-guide-websocket');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            setConnected(true);
+            console.log("Connected to websocket: " + frame);
+            stompClient.subscribe('/topic/messages', function (greeting) {
+                var msg = JSON.parse(greeting.body);
+                showGreeting(msg.from, msg.text);
+            });
         });
-    });
+    }
 }
 
 function disconnect() {
@@ -32,12 +39,12 @@ function disconnect() {
     console.log("Disconnected from websocket")
 }
 
-function showGreeting(message) {
-    $("#greetings").append("<tr><td>" + message + "</td></tr>");
+function showGreeting(from, message) {
+    $("#greetings").append("<tr><td><b>" + from + "</b>: " + message + "</td></tr>");
 }
 
 function sendMessage() {
-    stompClient.send("/app/chat", {}, JSON.stringify({'name': 'admin', 'text': $("#chat-text").val()}));
+    stompClient.send("/app/chat", {}, JSON.stringify({'from': $("#username").val(), 'text': $("#chat-text").val()}));
 }
 
 $(function () {
